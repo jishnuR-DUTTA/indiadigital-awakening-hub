@@ -48,12 +48,11 @@
 
 @layer components {
   .dropdown-menu {
-    @apply absolute z-10 hidden bg-brand-dark border border-brand-gray rounded-md shadow-lg py-2 mt-1 w-max;
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    @apply absolute z-50 bg-brand-dark border border-brand-gray rounded-md shadow-lg py-2 mt-1;
   }
 
   .dropdownItem {
-    @apply px-4 py-2 text-foreground hover:bg-muted relative overflow-hidden;
+    @apply px-4 py-1.5 text-sm text-foreground hover:bg-brand-gray hover:text-brand-orange relative overflow-hidden transition-colors;
   }
 
   .dropdownItem::after {
@@ -62,7 +61,7 @@
   }
 
   .dropdownItem:hover::after {
-    @apply animate-underline-left-to-right;
+    @apply w-full;
   }
 
   .count-animation {
@@ -133,5 +132,14 @@
 
   .slideshow-slide.active {
     @apply opacity-100;
+  }
+
+  @keyframes underline-left-to-right {
+    0% { width: 0; left: 0; }
+    100% { width: 100%; left: 0; }
+  }
+
+  .animate-underline-left-to-right {
+    animation: underline-left-to-right 0.3s ease forwards;
   }
 }

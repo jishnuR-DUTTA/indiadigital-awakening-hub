@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 
 const digitalInitiatives = [
@@ -52,6 +52,12 @@ const Navbar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  
+  // Find active initiative for highlighting
+  const activeInitiative = digitalInitiatives.find(
+    initiative => location.pathname === initiative.path
+  );
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -79,13 +85,20 @@ const Navbar: React.FC = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-            <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition duration-150">
+            <Link 
+              to="/" 
+              className={`px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition-colors ${
+                location.pathname === '/' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
+            >
               Home
             </Link>
             
             <div className="relative" ref={dropdownRef}>
               <button 
-                className="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition duration-150 flex items-center"
+                className={`px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition-colors flex items-center ${
+                  location.pathname.includes('/digital-goods') ? 'bg-brand-gray text-brand-orange' : ''
+                }`}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 onMouseEnter={() => setDropdownOpen(true)}
               >
@@ -95,7 +108,8 @@ const Navbar: React.FC = () => {
               
               {dropdownOpen && (
                 <div 
-                  className="dropdown-menu grid"
+                  className="dropdown-menu absolute z-10 grid bg-brand-dark border border-brand-gray rounded-md shadow-lg py-2 mt-1 max-h-[70vh] overflow-auto"
+                  style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(180px, 1fr))' }}
                   onMouseLeave={() => setDropdownOpen(false)}
                 >
                   {columns.map((column, colIndex) => (
@@ -104,10 +118,13 @@ const Navbar: React.FC = () => {
                         <Link 
                           key={itemIndex} 
                           to={item.path}
-                          className="dropdownItem hover:text-brand-orange transition-colors duration-200"
+                          className={`px-4 py-1.5 text-sm text-foreground hover:bg-brand-gray hover:text-brand-orange relative overflow-hidden transition-colors ${
+                            location.pathname === item.path ? 'bg-brand-gray/50 text-brand-orange' : ''
+                          }`}
                           onClick={() => setDropdownOpen(false)}
                         >
-                          {item.name}
+                          <span className="relative z-10">{item.name}</span>
+                          <span className="absolute bottom-0 left-0 h-0.5 bg-brand-orange w-0 group-hover:w-full transition-all duration-300"></span>
                         </Link>
                       ))}
                     </div>
@@ -116,11 +133,21 @@ const Navbar: React.FC = () => {
               )}
             </div>
             
-            <Link to="/about" className="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition duration-150">
+            <Link 
+              to="/about" 
+              className={`px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition-colors ${
+                location.pathname === '/about' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
+            >
               About
             </Link>
             
-            <Link to="/contact" className="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition duration-150">
+            <Link 
+              to="/contact" 
+              className={`px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-brand-gray transition-colors ${
+                location.pathname === '/contact' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
+            >
               Contact
             </Link>
           </div>
@@ -147,7 +174,9 @@ const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link 
               to="/" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray"
+              className={`block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray ${
+                location.pathname === '/' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
@@ -156,19 +185,23 @@ const Navbar: React.FC = () => {
             <div className="relative">
               <button 
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray flex items-center justify-between"
+                className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray flex items-center justify-between ${
+                  location.pathname.includes('/digital-goods') ? 'bg-brand-gray text-brand-orange' : ''
+                }`}
               >
                 <span>Digital Global Goods</span>
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {dropdownOpen && (
-                <div className="pl-4 max-h-60 overflow-y-auto">
+                <div className="pl-4 max-h-[50vh] overflow-y-auto">
                   {digitalInitiatives.map((item, index) => (
                     <Link 
                       key={index} 
                       to={item.path}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-orange hover:bg-brand-gray"
+                      className={`block px-3 py-1.5 rounded-md text-sm font-medium text-gray-300 hover:text-brand-orange hover:bg-brand-gray ${
+                        location.pathname === item.path ? 'bg-brand-gray/50 text-brand-orange' : ''
+                      }`}
                       onClick={() => {
                         setDropdownOpen(false);
                         setMobileMenuOpen(false);
@@ -183,7 +216,9 @@ const Navbar: React.FC = () => {
             
             <Link 
               to="/about" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray"
+              className={`block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray ${
+                location.pathname === '/about' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               About
@@ -191,7 +226,9 @@ const Navbar: React.FC = () => {
             
             <Link 
               to="/contact" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray"
+              className={`block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray ${
+                location.pathname === '/contact' ? 'bg-brand-gray text-brand-orange' : ''
+              }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Contact
