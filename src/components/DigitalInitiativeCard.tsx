@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Info } from 'lucide-react';
 
 interface DigitalInitiativeCardProps {
   name: string;
@@ -20,22 +21,26 @@ const DigitalInitiativeCard: React.FC<DigitalInitiativeCardProps> = ({
   link
 }) => {
   return (
-    <div className="flip-card-container h-64 w-full">
+    <div className="flip-card-container h-72 w-full">
       <div className="flip-card h-full">
-        <div className="flip-card-front bg-brand-dark border border-brand-gray rounded-lg p-4 flex flex-col items-center justify-center">
-          <img src={logo} alt={name} className="w-24 h-24 object-contain mb-4" />
-          <h3 className="text-lg font-semibold text-white">{name}</h3>
+        <div className="flip-card-front bg-brand-dark border border-brand-gray rounded-lg p-6 flex flex-col items-center justify-center shadow-md">
+          <div className="bg-white rounded-full p-3 mb-4 w-24 h-24 flex items-center justify-center">
+            <img src={logo} alt={name} className="w-full h-full object-contain" />
+          </div>
+          <h3 className="text-lg font-semibold text-white text-center">{name}</h3>
         </div>
-        <div className="flip-card-back bg-brand-gray border border-brand-orange rounded-lg p-4 flex flex-col justify-between">
-          <div>
-            <p className="text-sm text-white mb-2">{description}</p>
-            <p className="text-xs text-gray-300 mb-1">Leader: {leader}</p>
-            <p className="text-xs text-gray-300 mb-4">Contact: {email}</p>
+        <div className="flip-card-back bg-brand-gray border border-brand-orange rounded-lg p-6 flex flex-col justify-between shadow-lg">
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-brand-orange mb-2">{name}</h3>
+            <p className="text-sm text-white mb-3 line-clamp-3">{description}</p>
+            <p className="text-xs text-gray-300">Leader: {leader}</p>
+            <p className="text-xs text-gray-300">Contact: {email}</p>
           </div>
           <Link 
             to={link} 
-            className="mt-auto bg-brand-orange text-white py-2 px-4 rounded text-center text-sm hover:bg-opacity-80 transition-all"
+            className="mt-auto bg-brand-orange text-white py-2 px-4 rounded text-center text-sm hover:bg-opacity-80 transition-all flex items-center justify-center"
           >
+            <Info className="mr-2 h-4 w-4" />
             Learn More
           </Link>
         </div>

@@ -99,6 +99,30 @@
     transform: rotateY(180deg);
   }
 
+  .initiative-card {
+    @apply bg-brand-gray border border-brand-orange rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-brand-orange/20;
+  }
+
+  .initiative-header {
+    @apply bg-gradient-to-r from-brand-dark to-brand-gray p-6 flex flex-col md:flex-row items-center;
+  }
+
+  .initiative-logo {
+    @apply w-24 h-24 md:w-32 md:h-32 object-contain bg-white rounded-lg p-2 mb-6 md:mb-0 md:mr-8;
+  }
+
+  .initiative-content {
+    @apply p-6 text-gray-300;
+  }
+
+  .initiative-stats {
+    @apply border-b border-brand-dark pb-3 last:border-0 last:pb-0;
+  }
+
+  .initiative-leader {
+    @apply text-lg font-semibold text-brand-orange;
+  }
+
   .slideshow {
     @apply relative w-full h-full overflow-hidden;
   }

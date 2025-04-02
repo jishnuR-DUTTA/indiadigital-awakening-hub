@@ -106,11 +106,6 @@ export default {
 				'count-up': 'count-up 2s forwards',
 				'flip': 'flip 0.5s forwards',
 				'flip-back': 'flip-back 0.5s forwards'
-			},
-			utilities: {
-				'.backface-hidden': {
-					'backface-visibility': 'hidden',
-				},
 			}
 		}
 	},
