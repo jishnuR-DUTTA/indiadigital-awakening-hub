@@ -3,62 +3,60 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 
-const digitalInitiatives = [
-  { name: 'DigiLocker', path: '/digital-goods/digilocker' },
-  { name: 'Unified Payments Interface (UPI)', path: '/digital-goods/upi' },
-  { name: 'UMANG', path: '/digital-goods/umang' },
-  { name: 'API Setu', path: '/digital-goods/api-setu' },
-  { name: 'e-Courts', path: '/digital-goods/e-courts' },
-  { name: 'SIDH', path: '/digital-goods/sidh' },
-  { name: 'e-Office', path: '/digital-goods/e-office' },
-  { name: 'Aarogya Setu', path: '/digital-goods/aarogya-setu' },
-  { name: 'eSanjeevani', path: '/digital-goods/esanjeevani' },
-  { name: 'Poshan Tracker', path: '/digital-goods/poshan-tracker' },
-  { name: 'Co-WIN', path: '/digital-goods/co-win' },
-  { name: 'DIKSHA', path: '/digital-goods/diksha' },
-  { name: 'GeM', path: '/digital-goods/gem' },
-  { name: 'e-Hospital', path: '/digital-goods/e-hospital' },
-  { name: 'NCD Platform', path: '/digital-goods/ncd-platform' },
-  { name: 'Aadhaar', path: '/digital-goods/aadhaar' },
-  { name: 'Ayushman Bharat Digital Mission', path: '/digital-goods/abdm' },
-  { name: 'BharatNet', path: '/digital-goods/bharatnet' },
-  { name: 'PM-WANI', path: '/digital-goods/pm-wani' },
-  { name: 'CERT-In', path: '/digital-goods/cert-in' },
-  { name: 'DigiYatra', path: '/digital-goods/digiyatra' },
-  { name: 'SWAYAM', path: '/digital-goods/swayam' },
-  { name: 'National Digital Library', path: '/digital-goods/ndl' },
-  { name: 'Parivahan Sewa', path: '/digital-goods/parivahan-sewa' },
-  { name: 'FASTag', path: '/digital-goods/fastag' },
-  { name: 'VAHAN & SARATHI', path: '/digital-goods/vahan-sarathi' },
-  { name: 'Passport Seva', path: '/digital-goods/passport-seva' },
-  { name: 'eNAM', path: '/digital-goods/enam' },
-  { name: 'Kisan Suvidha', path: '/digital-goods/kisan-suvidha' },
-  { name: 'RAPDRP', path: '/digital-goods/rapdrp' }
-];
-
-// Function to chunk the array into groups
-const chunkArray = (arr: any[], size: number) => {
-  const result = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
+// Organize digital initiatives by category
+const digitalInitiativesByCategory = {
+  FINANCIAL: [
+    { name: 'Unified Payments Interface (UPI)', path: '/digital-goods/upi' },
+    { name: 'GeM', path: '/digital-goods/gem' },
+    { name: 'FASTag', path: '/digital-goods/fastag' },
+    { name: 'eNAM', path: '/digital-goods/enam' },
+  ],
+  HEALTH: [
+    { name: 'Aarogya Setu', path: '/digital-goods/aarogya-setu' },
+    { name: 'eSanjeevani', path: '/digital-goods/esanjeevani' },
+    { name: 'Poshan Tracker', path: '/digital-goods/poshan-tracker' },
+    { name: 'Co-WIN', path: '/digital-goods/co-win' },
+    { name: 'e-Hospital', path: '/digital-goods/e-hospital' },
+    { name: 'NCD Platform', path: '/digital-goods/ncd-platform' },
+    { name: 'Ayushman Bharat Digital Mission', path: '/digital-goods/abdm' },
+  ],
+  IDENTITY: [
+    { name: 'DigiLocker', path: '/digital-goods/digilocker' },
+    { name: 'SIDH', path: '/digital-goods/sidh' },
+    { name: 'Aadhaar', path: '/digital-goods/aadhaar' },
+    { name: 'DigiYatra', path: '/digital-goods/digiyatra' },
+    { name: 'Passport Seva', path: '/digital-goods/passport-seva' },
+  ],
+  EDUCATION: [
+    { name: 'DIKSHA', path: '/digital-goods/diksha' },
+    { name: 'SWAYAM', path: '/digital-goods/swayam' },
+    { name: 'National Digital Library', path: '/digital-goods/ndl' },
+  ],
+  GOVERNANCE: [
+    { name: 'UMANG', path: '/digital-goods/umang' },
+    { name: 'API Setu', path: '/digital-goods/api-setu' },
+    { name: 'e-Courts', path: '/digital-goods/e-courts' },
+    { name: 'e-Office', path: '/digital-goods/e-office' },
+    { name: 'BharatNet', path: '/digital-goods/bharatnet' },
+    { name: 'PM-WANI', path: '/digital-goods/pm-wani' },
+    { name: 'CERT-In', path: '/digital-goods/cert-in' },
+    { name: 'Parivahan Sewa', path: '/digital-goods/parivahan-sewa' },
+    { name: 'VAHAN & SARATHI', path: '/digital-goods/vahan-sarathi' },
+    { name: 'Kisan Suvidha', path: '/digital-goods/kisan-suvidha' },
+    { name: 'RAPDRP', path: '/digital-goods/rapdrp' },
+  ]
 };
 
-// Divide into 3 columns
-const columns = chunkArray(digitalInitiatives, Math.ceil(digitalInitiatives.length / 3));
+// Create a flat list of all initiatives for the mobile menu
+const allInitiatives = Object.values(digitalInitiativesByCategory).flat();
 
 const Navbar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCategoryOpen, setMobileCategoryOpen] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   
-  // Find active initiative for highlighting
-  const activeInitiative = digitalInitiatives.find(
-    initiative => location.pathname === initiative.path
-  );
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -108,23 +106,22 @@ const Navbar: React.FC = () => {
               
               {dropdownOpen && (
                 <div 
-                  className="dropdown-menu absolute z-10 grid bg-brand-dark border border-brand-gray rounded-md shadow-lg py-2 mt-1 max-h-[70vh] overflow-auto"
-                  style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(180px, 1fr))' }}
+                  className="categorized-dropdown"
                   onMouseLeave={() => setDropdownOpen(false)}
                 >
-                  {columns.map((column, colIndex) => (
-                    <div key={colIndex} className="flex flex-col">
-                      {column.map((item, itemIndex) => (
+                  {Object.entries(digitalInitiativesByCategory).map(([category, initiatives]) => (
+                    <div key={category} className="category-column">
+                      <h3 className="category-title">{category}</h3>
+                      {initiatives.map((initiative, index) => (
                         <Link 
-                          key={itemIndex} 
-                          to={item.path}
-                          className={`px-4 py-1.5 text-sm text-foreground hover:bg-brand-gray hover:text-brand-orange relative overflow-hidden transition-colors ${
-                            location.pathname === item.path ? 'bg-brand-gray/50 text-brand-orange' : ''
+                          key={index} 
+                          to={initiative.path}
+                          className={`category-item ${
+                            location.pathname === initiative.path ? 'text-brand-orange' : ''
                           }`}
                           onClick={() => setDropdownOpen(false)}
                         >
-                          <span className="relative z-10">{item.name}</span>
-                          <span className="absolute bottom-0 left-0 h-0.5 bg-brand-orange w-0 group-hover:w-full transition-all duration-300"></span>
+                          {initiative.name}
                         </Link>
                       ))}
                     </div>
@@ -182,37 +179,40 @@ const Navbar: React.FC = () => {
               Home
             </Link>
             
-            <div className="relative">
-              <button 
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray flex items-center justify-between ${
-                  location.pathname.includes('/digital-goods') ? 'bg-brand-gray text-brand-orange' : ''
-                }`}
-              >
-                <span>Digital Global Goods</span>
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {dropdownOpen && (
-                <div className="pl-4 max-h-[50vh] overflow-y-auto">
-                  {digitalInitiatives.map((item, index) => (
-                    <Link 
-                      key={index} 
-                      to={item.path}
-                      className={`block px-3 py-1.5 rounded-md text-sm font-medium text-gray-300 hover:text-brand-orange hover:bg-brand-gray ${
-                        location.pathname === item.path ? 'bg-brand-gray/50 text-brand-orange' : ''
-                      }`}
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Mobile Categories */}
+            {Object.entries(digitalInitiativesByCategory).map(([category, initiatives]) => (
+              <div key={category} className="relative">
+                <button 
+                  onClick={() => setMobileCategoryOpen(mobileCategoryOpen === category ? null : category)}
+                  className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-gray flex items-center justify-between ${
+                    initiatives.some(item => location.pathname === item.path) ? 'bg-brand-gray text-brand-orange' : ''
+                  }`}
+                >
+                  <span>{category}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileCategoryOpen === category ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {mobileCategoryOpen === category && (
+                  <div className="pl-4 max-h-[50vh] overflow-y-auto">
+                    {initiatives.map((item, index) => (
+                      <Link 
+                        key={index} 
+                        to={item.path}
+                        className={`block px-3 py-1.5 rounded-md text-sm font-medium text-gray-300 hover:text-brand-orange hover:bg-brand-gray ${
+                          location.pathname === item.path ? 'bg-brand-gray/50 text-brand-orange' : ''
+                        }`}
+                        onClick={() => {
+                          setMobileCategoryOpen(null);
+                          setMobileMenuOpen(false);
+                        }}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
             
             <Link 
               to="/about" 

@@ -64,6 +64,24 @@
     @apply w-full;
   }
 
+  /* New categorized dropdown styles */
+  .categorized-dropdown {
+    @apply absolute z-50 bg-brand-dark border border-brand-gray rounded-md shadow-lg py-4 mt-1 grid gap-4 min-w-[850px];
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .category-column {
+    @apply flex flex-col px-4;
+  }
+
+  .category-title {
+    @apply text-brand-orange font-semibold pb-3 border-b border-brand-gray mb-2 text-sm;
+  }
+
+  .category-item {
+    @apply text-sm text-foreground hover:text-brand-orange py-1.5 transition-colors;
+  }
+
   .count-animation {
     counter-reset: count var(--num-start);
     animation: countUp 2s forwards;
